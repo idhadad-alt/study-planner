@@ -67,14 +67,15 @@ footer{margin-top:36px;color:var(--ink2);font-size:14px;border-top:1px solid var
 <h1>התכנון שלי</h1>
 <p class="quiet" id="sub"></p>
 <nav aria-label="תפריט"><button data-tab="today">היום</button><button data-tab="exams">המבחנים</button><button data-tab="plan">כל הימים</button></nav>
-<p><button class="link" data-tab="help">איך משתמשים?</button> <button class="link" data-tab="feedback">איך הולך לי?</button></p>
+<p><button class="link" data-tab="help">איך משתמשים?</button> <button class="link" data-tab="feedback">איך הולך לי?</button> <button class="link" data-tab="calendar">היומן שלי</button></p>
 <div id="warn"></div>
 <div id="view"></div>
 <footer>
-<p>כל הנתונים נשמרים רק בדפדפן הזה, במכשיר הזה. אין סנכרון של נתוני לימוד. רק אם מפעילים תזכורות, הרשאת ההתראות והשעה נשמרות בנפרד בשרת פרטי. אם מנקים את נתוני הדפדפן או עוברים למכשיר אחר, הם לא יופיעו שם. אפשר לשמור גיבוי בלשונית "המבחנים".</p>
+<p>כל הנתונים נשמרים רק בדפדפן הזה, במכשיר הזה. נתוני הלימוד נשארים כאן, אלא אם בוחרים להוסיף אירועים ל-Google Calendar דרך "היומן שלי". רק אם מפעילים תזכורות, הרשאת ההתראות והשעה נשמרות בנפרד בשרת פרטי. אם מנקים את נתוני הדפדפן או עוברים למכשיר אחר, הם לא יופיעו שם. אפשר לשמור גיבוי בלשונית "המבחנים".</p>
 </footer>
 </main>
 <script src="push.js"></script>
+<script src="calendar.js"></script>
 <script>
 (function(){
 'use strict';
@@ -209,11 +210,12 @@ function render(){
   if(st.exams.some(function(e){return e.demo}))w+='<div class="note"><b>זו דוגמה</b>הנתונים שמסומנים "דוגמה" אינם אמיתיים. <button class="link danger" data-act="cleardemo">מחיקת הדוגמה</button></div>';
   document.getElementById('warn').innerHTML=w;
   var v=document.getElementById('view'),sy=window.scrollY;
-  v.innerHTML=tab==='feedback'?feedbackHtml():tab==='help'?helpHtml():tab==='today'?viewToday(t,p,up):tab==='exams'?viewExams(t):viewPlan(t,p);
+  v.innerHTML=tab==='calendar'?window.calendarHtml():tab==='feedback'?feedbackHtml():tab==='help'?helpHtml():tab==='today'?viewToday(t,p,up):tab==='exams'?viewExams(t):viewPlan(t,p);
   if(tab==='feedback'&&st.feedback){var fl=v.querySelector('#fb-load'),fi=v.querySelector('#fb-issue'),fn=v.querySelector('#fb-note');fl.value=st.feedback.load||'';fi.value=st.feedback.issue||'';fn.value=st.feedback.note||''}
   if(tab==='exams'){var r=v.querySelector('[data-act=rest]');if(r)r.value=String(st.rest);var c=v.querySelector('[data-act=cap]');if(c)c.value=String(st.cap)}
   window.scrollTo(0,sy);
 }
+window.plannerCalendarDays=function(){return plan(st.exams.filter(function(e){return !e.demo&&diff(today(),e.date)>=0}),today()).days.filter(function(d){return d.items.length||d.review.length}).map(function(d){return d.date})};
 function go(t){tab=t;flash='';render();window.scrollTo(0,0)}
 
 document.addEventListener('click',function(ev){
