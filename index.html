@@ -98,14 +98,16 @@ function plan(exams,t){
   function get(d){return days[d]||(days[d]={date:d,items:[],review:[]})}
   exams.forEach(function(e){
     var avail=[];
+    if(diff(t,e.date)>366){unsched.push(e);return}
     for(var d=t;diff(d,e.date)>0;d=addDays(d,1)){if(parse(d).getDay()!==st.rest)avail.push(d)}
-    var openT=e.topics.filter(function(x){return!x.done});
+    var openT=e.topics.filter(function(x){return !x.done || x.done===t});
+    if(!e.topics.some(function(x){return !x.done}))return;
     if(!openT.length)return;
     if(!avail.length){unsched.push(e);return}
     var study=avail;
     if(avail.length>=4){study=avail.slice(0,-1);get(avail[avail.length-1]).review.push(e)}
     if(openT.length>study.length*st.cap)tight.push(e);
-    openT.forEach(function(x,i){get(study[Math.floor(i*study.length/openT.length)]).items.push({e:e,t:x})});
+    openT.forEach(function(x,i){if(!x.done)get(study[Math.floor(i*study.length/openT.length)]).items.push({e:e,t:x})});
   });
   var list=Object.keys(days).sort().map(function(k){return days[k]});
   return{days:list,unsched:unsched,tight:tight};
@@ -125,10 +127,11 @@ function viewToday(t,p,up){
   var tot=0,dn=0;up.forEach(function(e){tot+=e.topics.length;e.topics.forEach(function(x){if(x.done)dn++})});
   var nx=up.filter(function(e){return e.topics.some(function(x){return!x.done})})[0];
   var h='<h2>היום</h2><p>'+heDay(t)+'</p>';
-  if(!openI.length&&done.length)h+='<div class="cheer">סיימת את מה שתוכנן להיום. אפשר לנוח, או לקחת נושא קטן מהימים הבאים.</div>';
+  if(!openI.length&&done.length&&!(td&&td.review.length))h+='<div class="cheer">סיימת את מה שתוכנן להיום. אפשר לנוח, או לקחת נושא קטן מהימים הבאים.</div>';
   if(!openI.length&&!done.length)h+='<p>אין נושאים מתוכננים להיום.'+(p.days[0]?' היום הבא עם לימוד: '+heDay(p.days[0].date)+'.':'')+'</p>';
   if(openI.length>st.cap)h+='<div class="note"><b>היום עמוס</b>יש '+openI.length+' נושאים, יותר מ-'+st.cap+'. אפשר להתחיל מהמבחן הקרוב ביותר. מה שלא נגמר עובר אוטומטית לימים הבאים.</div>';
   h+='<div class="list">'+openI.map(function(i){return check(i.e,i.t)}).join('')+'</div>';
+  if(td)h+=td.review.map(function(e){return '<div class="review">חזרה כללית: '+esc(e.subject)+'</div>'}).join('');
   if(done.length)h+='<h3>הושלם היום</h3><div class="list">'+done.map(function(i){return check(i.e,i.t)}).join('')+'</div>';
   if(flash)h+='<div class="cheer" role="status">'+esc(flash)+'</div>';
   h+='<h2>איפה אני</h2><div class="stats"><div><b>'+dn+'/'+tot+'</b><small>נושאים הושלמו</small></div><div><b>'+st.stars+' ⭐</b><small>כוכבים. רק עולים</small></div></div><div class="bar" role="progressbar" aria-valuemin="0" aria-valuemax="'+tot+'" aria-valuenow="'+dn+'"><i style="width:'+(tot?dn/tot*100:0)+'%"></i></div>';
@@ -215,7 +218,7 @@ document.addEventListener('change',function(ev){
   var b=ev.target,a=b.dataset&&b.dataset.act;if(!a)return;
   if(a==='toggle'){
     var e=byId(b.dataset.e),x=e.topics.filter(function(y){return y.id===b.dataset.t})[0];
-    if(x.done){x.done=null;st.stars=Math.max(0,st.stars-1);flash=''}else{x.done=today();st.stars++;flash=PRAISE[Math.floor(Math.random()*PRAISE.length)]}
+    if(x.done){x.done=null;flash=''}else{x.done=today();if(!x.earned){st.stars++;x.earned=true}flash=PRAISE[Math.floor(Math.random()*PRAISE.length)]}
     save();render()
   }else if(a==='rest'){st.rest=Number(b.value);save();render()}
   else if(a==='cap'){st.cap=Number(b.value);save();render()}
@@ -231,6 +234,8 @@ function addExam(){
   var er=document.getElementById('f-err');
   if(!s){er.textContent='חסר שם מקצוע.';return}
   if(!d){er.textContent='חסר תאריך.';return}
+  if(diff(today(),d)<0){er.textContent='התאריך כבר עבר. בחר תאריך מהיום והלאה.';return}
+  if(diff(today(),d)>366){er.textContent='בחר תאריך בשנה הקרובה.';return}
   if(!tp.length){er.textContent='כתוב לפחות נושא אחד.';return}
   st.exams.push({id:uid(),subject:s,date:d,topics:tp.map(function(x){return{id:uid(),text:x,done:null}})});
   save();render();
@@ -239,9 +244,17 @@ function exportData(){
   var blob=new Blob([JSON.stringify(st,null,1)],{type:'application/json'});
   var a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='planner-backup-'+today()+'.json';document.body.appendChild(a);a.click();a.remove();
 }
+function validData(o){
+ if(!o||!Array.isArray(o.exams)||o.exams.length>200)throw Error('invalid');
+ o.exams=o.exams.map(function(e){
+ if(!e||typeof e.subject!=='string'||!/^\d{4}-\d{2}-\d{2}$/.test(e.date)||!Array.isArray(e.topics)||e.topics.length>1000)throw Error('invalid');
+ return {id:uid(),subject:e.subject.slice(0,200),date:e.date,demo:!!e.demo,topics:e.topics.map(function(x){if(!x||typeof x.text!=='string')throw Error('invalid');return{id:uid(),text:x.text.slice(0,2000),done:typeof x.done==='string'&&/^\d{4}-\d{2}-\d{2}$/.test(x.done)?x.done:null,earned:!!x.earned}})};
+ });
+ return {exams:o.exams,stars:Math.max(0,Number(o.stars)||0),rest:[-1,0,5,6].includes(o.rest)?o.rest:-1,cap:[2,3,4,5,6].includes(o.cap)?o.cap:4,remind:false,lastNotif:''};
+}
 function importData(f){
   var er=document.getElementById('imp-err');if(!f)return;
-  var r=new FileReader();r.onload=function(){try{var o=JSON.parse(r.result);if(!o||!Array.isArray(o.exams))throw 0;if(!confirm('לטעון את הגיבוי? זה יחליף את מה שיש עכשיו.'))return;st=Object.assign({},INIT,o);save();render()}catch(e){er.textContent='הקובץ לא נראה כמו גיבוי של האפליקציה.'}};r.readAsText(f);
+  var r=new FileReader();r.onload=function(){try{var o=JSON.parse(r.result);if(!o||!Array.isArray(o.exams))throw 0;if(!confirm('לטעון את הגיבוי? זה יחליף את מה שיש עכשיו.'))return;st=validData(o);save();render()}catch(e){er.textContent='הקובץ לא נראה כמו גיבוי של האפליקציה.'}};r.readAsText(f);
 }
 function toggleRemind(on){
   if(!on){st.remind=false;save();render();return}
