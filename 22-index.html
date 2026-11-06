@@ -1,0 +1,265 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>התכנון שלי</title>
+<meta name="theme-color" content="#73a89a">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAALQAAAC0CAIAAACyr5FlAAADyElEQVR4nO3d3XHTQBSG4QNDj1RABVAGFUAD0CUXmmEY7C+Rba32R89zmeRik/NmV7Jn5A9ff/0ouOdj7wUwLnEQiYNIHETiIBIHkTiIxEEkDiJxEImDSBxE4iASB5E4iMRBJA4icRCJg0gcROIgEgeROIjEQSQOInEQiYNIHETiIBIHkTiIxEEkDiJxEImDSBxE4iASB5E4iMRBJA4icRCJg0gcROIgEgeROIjEQfSp9wKu7vvnL7df/Pb75/kruSWObu5m8e+3uifiWOnjjTIe+pmmxNHB/qn37UMcZ3t03h37EMepnpt0rz7EcZ7u1xCPEsdJXiyjS1jiIBLHGaY7UDbiaG7SMkocrc1bRomjqanLKHG0M3sZJY5GDi+jy5tw4iASx/HW2DZKHIdbpowSx7FWKqPEcaDFyihxHGW9Mkoch1jgJY27xDGiEbaNEsfrljxQNuJ4ycJllDhesXYZJY6nLV9GieM5VyijxPGEVW9cb4mjvzG3jRLHoy5yoGzE8YBLlVHi2O9qZZQ4drpgGSWOPa5ZRonjXde5cb01ymOfRn401rEm+qX6xzHyo7Eue6BsOh8rIz8a6+JlVN84Rn40ljKqYxwjPxpLGZs+cYz8aCxl/DXZrWzrPq5843qrQxwzPh3rafNuGzXdzrFp1IcD5T9TxlENBqmMW7PGUVXfP385aqLKuGviODavz1UZyfRx1GvTVcYbVoijxn7hZF4d4mj0vzXCpFfaNmqZnWPzUB8OlHf1iaPd33HnyJWxR7edo2Mfytip57HSpQ9l7Nf5muPkPpTxkP4XpN9+/zzn/mWE25m59I9jM+P97drbRo0TRzXuw4HyhIHiqHn2jyuUUaPFUS0vQY4y+PIONFwcm2EHMOzCWhg0jhpyDAMuqalx46jrDWM0Q8dRI/UxzkpOM3ocNcZURljD+SaIo3rP5ppl1CxxVL8JXbaMmiiO6jGnK5dRc8VR507r4mXUdHGUmZ1ovjjqlD4kWJPGUY2Hp4zNrHFUsxEq46+J46gGb+Eq419zx7E5aqLK+M8KcdQRc1XGrUXiKNNtYJ04XiGsu5aK47kZKyNZKo56fNLKeMNqcdQj81bG2xaMo/ZNXRnv6v+pCY1ss7/OJ3W0sGwcGx28Ys1jhUOIg0gcROIgEgeROIjEQSQOInEQiYNIHETiIBIHkTiIxEEkDiJxEImDSBxE4iASB5E4iMRBJA4icRCJg0gcROIgEgeROIjEQSQOInEQiYNIHETiIBIHkTiIxEEkDiJxEImDSBxE4iASB5E4iP4Ap/MhII3YYtcAAAAASUVORK5CYII=">
+<style>
+:root{--ink:#251f21;--ink2:#585254;--line:#e4e0de;--teal:#4f8f7e;--tealbg:#eef6f3;--sand:#f4efec;--red:#c8323d;--r:16px}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{font-family:system-ui,-apple-system,"Segoe UI",Arial,"Noto Sans Hebrew",sans-serif;color:var(--ink);background:#fbfaf9;font-size:17px;line-height:1.5;-webkit-text-size-adjust:100%}
+main{max-width:640px;margin:0 auto;padding:20px 18px 64px}
+h1{font-size:30px;margin:8px 0 2px;letter-spacing:-.02em}
+h2{font-size:21px;margin:26px 0 10px}
+h3{font-size:15px;margin:18px 0 6px;color:var(--ink2);font-weight:600}
+p{margin:8px 0}.quiet{color:var(--ink2)}.small{font-size:14px}
+button,input,select,textarea{font:inherit;color:var(--ink)}
+nav{display:flex;gap:8px;position:sticky;top:0;background:#fbfaf9;padding:10px 0;z-index:5}
+nav button{flex:1;min-height:50px;border:1px solid var(--line);background:#fff;border-radius:var(--r);font-weight:650;cursor:pointer}
+nav button[aria-current=page]{background:var(--teal);border-color:var(--teal);color:#fff}
+.btn{min-height:50px;padding:0 22px;border-radius:var(--r);border:0;background:var(--ink);color:#fff;font-weight:650;cursor:pointer}
+.btn.ghost{background:#fff;color:var(--ink);border:1px solid var(--line)}
+.btn.sm{min-height:44px;padding:0 16px}
+.link{background:none;border:0;text-decoration:underline;cursor:pointer;min-height:44px;padding:0 6px}
+.link.danger{color:var(--red)}
+.list{display:grid;gap:8px}
+.check{display:flex;align-items:center;gap:12px;padding:12px 14px;min-height:56px;border:1px solid var(--line);border-radius:var(--r);background:#fff;cursor:pointer;flex:1}
+.check input{position:absolute;opacity:0;width:1px;height:1px}
+.check input:focus-visible+.box{outline:3px solid var(--ink);outline-offset:2px}
+.box{flex:none;width:30px;height:30px;border-radius:10px;border:2px solid var(--ink2);display:grid;place-items:center;color:#fff;font-weight:700}
+.check.done{background:var(--tealbg)}.check.done .box{background:var(--teal);border-color:var(--teal)}
+.check.done b{text-decoration:line-through;color:var(--ink2);font-weight:400}
+.ct{display:grid}.ct small{color:var(--ink2);font-size:13px}
+.cheer{margin:12px 0;padding:14px;border-radius:var(--r);background:var(--tealbg);border:1px solid var(--teal)}
+.note{margin:12px 0;padding:14px;border-radius:var(--r);background:var(--sand)}
+.note b{display:block}
+.stats{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.stats div{padding:14px;border-radius:var(--r);background:var(--sand);display:grid}
+.stats b{font-size:22px}.stats small{color:var(--ink2)}
+.bar{height:12px;border-radius:99px;background:var(--sand);margin:14px 0 8px;overflow:hidden}
+.bar i{display:block;height:100%;background:var(--teal);border-radius:99px;transition:width .4s}
+.form{display:grid;gap:14px}.form label{display:grid;gap:6px;font-weight:650}
+.form input,.form select,.form textarea,.add input{min-height:50px;padding:8px 12px;border:1px solid var(--ink2);border-radius:12px;background:#fff;width:100%;font-weight:400}
+.err{color:var(--red);font-weight:650}
+.exam{border:1px solid var(--line);border-radius:var(--r);margin-bottom:10px;overflow:hidden;background:#fff}
+.examhead{width:100%;display:flex;justify-content:space-between;align-items:center;gap:12px;min-height:60px;padding:10px 14px;background:#fff;border:0;cursor:pointer;text-align:start}
+.examhead span:first-child{display:grid}.examhead small{color:var(--ink2);font-size:13px}
+.cnt{font-weight:650;color:var(--teal)}
+.examBody{padding:12px;background:var(--sand);display:grid;gap:12px}
+.trow{display:flex;gap:6px;align-items:center}
+.x{flex:none;width:44px;height:44px;border:0;background:none;font-size:24px;color:var(--ink2);cursor:pointer}
+.add{display:flex;gap:8px}
+.day{margin:18px 0}.dayhead{display:flex;justify-content:space-between;margin-bottom:8px;font-weight:650}
+.tag{font-weight:400;font-size:13px;color:var(--ink2);border:1px solid #c0bebf;border-radius:99px;padding:0 10px}
+.review{margin-top:8px;padding:10px 14px;border-radius:var(--r);border:1px dashed var(--teal);color:var(--ink2)}
+.banner{margin:10px 0;padding:12px 14px;border-radius:var(--r);background:var(--sand);display:flex;gap:10px;align-items:center;justify-content:space-between}
+footer{margin-top:36px;color:var(--ink2);font-size:14px;border-top:1px solid var(--line);padding-top:14px}
+.row2{display:flex;gap:10px;flex-wrap:wrap}
+</style>
+</head>
+<body>
+<main>
+<h1>התכנון שלי</h1>
+<p class="quiet" id="sub"></p>
+<nav aria-label="תפריט"><button data-tab="today">היום</button><button data-tab="exams">המבחנים</button><button data-tab="plan">כל הימים</button></nav>
+<div id="warn"></div>
+<div id="view"></div>
+<footer>
+<p>כל הנתונים נשמרים רק בדפדפן הזה, במכשיר הזה. אין חשבון, אין שרת ואין סנכרון. אם מנקים את נתוני הדפדפן או עוברים למכשיר אחר, הם לא יופיעו שם. אפשר לשמור גיבוי בלשונית "המבחנים".</p>
+</footer>
+</main>
+<script>
+(function(){
+'use strict';
+var KEY='study-planner.v1';
+var INIT={exams:[],stars:0,rest:-1,cap:4,remind:false,lastNotif:'',msg:''};
+var st=load(),tab='today',open=null,storageOk=true,msg='',flash='';
+
+function load(){try{var r=localStorage.getItem(KEY);if(r){var o=JSON.parse(r);return Object.assign({},INIT,o)}}catch(e){}return JSON.parse(JSON.stringify(INIT))}
+function save(){try{localStorage.setItem(KEY,JSON.stringify(st));storageOk=true}catch(e){storageOk=false}}
+function esc(s){return String(s).replace(/[&<>"']/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]})}
+function pad(n){return String(n).padStart(2,'0')}
+function key(d){return d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate())}
+function parse(s){var p=s.split('-').map(Number);return new Date(p[0],p[1]-1,p[2])}
+function addDays(s,n){var d=parse(s);d.setDate(d.getDate()+n);return key(d)}
+function diff(a,b){return Math.round((Date.UTC.apply(null,b.split('-').map(function(v,i){return i==1?v-1:+v}))-Date.UTC.apply(null,a.split('-').map(function(v,i){return i==1?v-1:+v})))/864e5)}
+function uid(){return Math.random().toString(36).slice(2,10)}
+function heDay(s){return parse(s).toLocaleDateString('he-IL',{weekday:'long',day:'numeric',month:'long'})}
+function heShort(s){return parse(s).toLocaleDateString('he-IL',{day:'numeric',month:'numeric'})}
+function today(){return key(new Date())}
+
+function plan(exams,t){
+  var days={},unsched=[],tight=[];
+  function get(d){return days[d]||(days[d]={date:d,items:[],review:[]})}
+  exams.forEach(function(e){
+    var avail=[];
+    for(var d=t;diff(d,e.date)>0;d=addDays(d,1)){if(parse(d).getDay()!==st.rest)avail.push(d)}
+    var openT=e.topics.filter(function(x){return!x.done});
+    if(!openT.length)return;
+    if(!avail.length){unsched.push(e);return}
+    var study=avail;
+    if(avail.length>=4){study=avail.slice(0,-1);get(avail[avail.length-1]).review.push(e)}
+    if(openT.length>study.length*st.cap)tight.push(e);
+    openT.forEach(function(x,i){get(study[Math.floor(i*study.length/openT.length)]).items.push({e:e,t:x})});
+  });
+  var list=Object.keys(days).sort().map(function(k){return days[k]});
+  return{days:list,unsched:unsched,tight:tight};
+}
+
+var PRAISE=['יפה. צעד אחד קטן קדימה.','עוד נושא מאחוריך.','זה נספר. הערימה קטנה יותר.','מצוין, ממשיכים בקצב שלך.','כל הכבוד על ההתחלה, זה החלק הקשה.'];
+var DEMO=function(t){return[
+ {id:uid(),demo:1,subject:'דוגמה: ספרות',date:addDays(t,6),topics:['שיר א','שיר ב','סיפור קצר','מושגי יסוד'].map(function(x){return{id:uid(),text:x,done:null}})},
+ {id:uid(),demo:1,subject:'דוגמה: מתמטיקה',date:addDays(t,9),topics:['פונקציות','הסתברות','גיאומטריה','סדרות','תרגול מבחנים'].map(function(x){return{id:uid(),text:x,done:null}})}]};
+
+function check(e,x){var d=!!x.done;return '<label class="check'+(d?' done':'')+'"><input type="checkbox" data-act="toggle" data-e="'+e.id+'" data-t="'+x.id+'"'+(d?' checked':'')+'><span class="box" aria-hidden="true">'+(d?'✓':'')+'</span><span class="ct"><b>'+esc(x.text)+'</b><small>'+esc(e.subject)+'</small></span></label>'}
+
+function viewToday(t,p,up){
+  if(!up.length)return '<h2>להתחיל</h2><p>עוד אין מבחנים. הוסף מבחן ראשון: מקצוע, תאריך ורשימת נושאים.</p><p><button class="btn" data-act="goexams">הוספת מבחן</button></p><p class="quiet">רוצה קודם לראות איך זה נראה?</p><p><button class="btn ghost" data-act="demo">טעינת דוגמה</button></p>';
+  var td=p.days.filter(function(d){return d.date===t})[0],openI=td?td.items:[];
+  var done=[];st.exams.forEach(function(e){e.topics.forEach(function(x){if(x.done===t)done.push({e:e,t:x})})});
+  var tot=0,dn=0;up.forEach(function(e){tot+=e.topics.length;e.topics.forEach(function(x){if(x.done)dn++})});
+  var nx=up.filter(function(e){return e.topics.some(function(x){return!x.done})})[0];
+  var h='<h2>היום</h2><p>'+heDay(t)+'</p>';
+  if(!openI.length&&done.length)h+='<div class="cheer">סיימת את מה שתוכנן להיום. אפשר לנוח, או לקחת נושא קטן מהימים הבאים.</div>';
+  if(!openI.length&&!done.length)h+='<p>אין נושאים מתוכננים להיום.'+(p.days[0]?' היום הבא עם לימוד: '+heDay(p.days[0].date)+'.':'')+'</p>';
+  if(openI.length>st.cap)h+='<div class="note"><b>היום עמוס</b>יש '+openI.length+' נושאים, יותר מ-'+st.cap+'. אפשר להתחיל מהמבחן הקרוב ביותר. מה שלא נגמר עובר אוטומטית לימים הבאים.</div>';
+  h+='<div class="list">'+openI.map(function(i){return check(i.e,i.t)}).join('')+'</div>';
+  if(done.length)h+='<h3>הושלם היום</h3><div class="list">'+done.map(function(i){return check(i.e,i.t)}).join('')+'</div>';
+  if(flash)h+='<div class="cheer" role="status">'+esc(flash)+'</div>';
+  h+='<h2>איפה אני</h2><div class="stats"><div><b>'+dn+'/'+tot+'</b><small>נושאים הושלמו</small></div><div><b>'+st.stars+' ⭐</b><small>כוכבים. רק עולים</small></div></div><div class="bar" role="progressbar" aria-valuemin="0" aria-valuemax="'+tot+'" aria-valuenow="'+dn+'"><i style="width:'+(tot?dn/tot*100:0)+'%"></i></div>';
+  if(nx)h+='<p class="quiet">המבחן הקרוב: '+esc(nx.subject)+', '+heDay(nx.date)+' ('+(diff(t,nx.date)==0?'היום':'בעוד '+diff(t,nx.date)+' ימים')+').</p>';
+  p.tight.forEach(function(e){h+='<div class="note"><b>'+esc(e.subject)+': הרבה נושאים בזמן קצר</b>לא כל הנושאים נכנסים בנוחות עד המבחן. כדאי לסמן קודם את החשובים ביותר, ואפשר להעלות את מספר הנושאים ביום בהגדרות.</div>'});
+  p.unsched.forEach(function(e){h+='<div class="note"><b>'+esc(e.subject)+': המבחן מחר או היום</b>אין ימים לחלק. בחר כמה נושאים עיקריים והתחל מהם.</div>'});
+  return h;
+}
+
+function viewExams(t){
+  var sorted=st.exams.slice().sort(function(a,b){return a.date<b.date?-1:1});
+  var h='<h2>מבחן חדש</h2><div class="form"><label>מקצוע<input id="f-sub" placeholder="למשל: היסטוריה"></label><label>תאריך המבחן<input id="f-date" type="date" min="'+t+'"></label><label>נושאים (כל נושא בשורה, או עם פסיקים)<textarea id="f-top" rows="5" placeholder="המהפכה הצרפתית&#10;מלחמת העולם הראשונה"></textarea></label><div class="err" id="f-err" role="alert"></div><button class="btn" data-act="addexam">הוספה</button></div>';
+  h+='<h2>המבחנים שלי ('+sorted.length+')</h2>';
+  if(!sorted.length)h+='<p class="quiet">עוד לא הוספת מבחנים.</p>';
+  sorted.forEach(function(e){
+    var d=e.topics.filter(function(x){return x.done}).length,l=diff(t,e.date),o=open===e.id;
+    h+='<div class="exam"><button class="examhead" data-act="open" data-e="'+e.id+'" aria-expanded="'+o+'"><span><b>'+esc(e.subject)+'</b><small>'+heDay(e.date)+' · '+(l<0?'עבר':l===0?'היום':'בעוד '+l+' ימים')+'</small></span><span class="cnt">'+d+'/'+e.topics.length+'</span></button>';
+    if(o){
+      h+='<div class="examBody"><div class="form"><label>מקצוע<input data-act="esub" data-e="'+e.id+'" value="'+esc(e.subject)+'"></label><label>תאריך<input type="date" data-act="edate" data-e="'+e.id+'" value="'+e.date+'"></label></div><div class="list">'+e.topics.map(function(x){return '<div class="trow">'+check(e,x)+'<button class="x" data-act="deltopic" data-e="'+e.id+'" data-t="'+x.id+'" aria-label="מחיקת '+esc(x.text)+'">×</button></div>'}).join('')+'</div>'+
+      '<div class="add"><input id="nt-'+e.id+'" placeholder="הוספת נושא" aria-label="נושא חדש"><button class="btn sm" data-act="addtopic" data-e="'+e.id+'">הוסף</button></div><button class="link danger" data-act="delexam" data-e="'+e.id+'">מחיקת המבחן</button></div>';
+    }
+    h+='</div>';
+  });
+  h+='<h2>הגדרות</h2><div class="form"><label>יום מנוחה קבוע<select data-act="rest"><option value="-1">אין, לומדים כל יום</option><option value="5">שישי</option><option value="6">שבת</option><option value="0">ראשון</option></select></label><label>כמה נושאים ביום נוח לי<select data-act="cap">'+[2,3,4,5,6].map(function(n){return '<option>'+n+'</option>'}).join('')+'</select></label></div>';
+  h+='<h2>תזכורת</h2>'+remindHtml();
+  h+='<h2>גיבוי</h2><p class="quiet small">הנתונים רק במכשיר הזה. אפשר לשמור קובץ גיבוי ולטעון אותו כאן או במכשיר אחר.</p><div class="row2"><button class="btn ghost sm" data-act="export">שמירת גיבוי</button><label class="btn ghost sm" style="display:inline-grid;place-items:center;cursor:pointer">טעינת גיבוי<input type="file" accept="application/json" data-act="import" style="display:none"></label></div><div class="err" id="imp-err" role="alert"></div>';
+  if(st.exams.some(function(e){return e.demo}))h+='<p><button class="link danger" data-act="cleardemo">מחיקת נתוני הדוגמה</button></p>';
+  return h;
+}
+
+function remindHtml(){
+  var sup=('Notification' in window)&&('serviceWorker' in navigator);
+  if(!sup)return '<p class="quiet small">הדפדפן הזה לא תומך בהתראות. הסיכום של היום תמיד מופיע כשפותחים את הדף.</p>';
+  var perm=Notification.permission;
+  var ios=/iphone|ipad/i.test(navigator.userAgent)&&!window.navigator.standalone;
+  var h='<p class="quiet small">התזכורת מופיעה רק כשהדף פתוח או נפתח: הודעה אחת ביום עם מה שמתוכנן להיום. היא לא נשלחת כשהדף סגור לגמרי.</p>';
+  if(ios)h+='<p class="quiet small">באייפון צריך קודם להוסיף למסך הבית (שיתוף ← הוספה למסך הבית) ולפתוח משם.</p>';
+  if(perm==='denied')h+='<p class="quiet small">ההתראות חסומות בהגדרות הדפדפן.</p>';
+  else h+='<label class="check" style="cursor:pointer"><input type="checkbox" data-act="remind"'+(st.remind&&perm==='granted'?' checked':'')+'><span class="box" aria-hidden="true">'+(st.remind&&perm==='granted'?'✓':'')+'</span><span class="ct"><b>הודעה יומית כשפותחים</b></span></label>';
+  return h;
+}
+
+function viewPlan(t,p){
+  if(!p.days.length)return '<h2>כל הימים</h2><p class="quiet">אין עדיין תכנון. הוסף מבחן בלשונית "המבחנים".</p>';
+  var h='<h2>כל הימים</h2><p class="quiet">נושאים שלא הושלמו מתחלקים מחדש על הימים שנשארו. אין פספוס, רק הזזה. אין לימוד אחרי תאריך המבחן.</p>';
+  p.days.forEach(function(d){
+    h+='<div class="day"><div class="dayhead"><span>'+(d.date===t?'היום':heDay(d.date))+'</span>'+(d.items.length>st.cap?'<span class="tag">עמוס: '+d.items.length+'</span>':'')+'</div><div class="list">'+d.items.map(function(i){return check(i.e,i.t)}).join('')+'</div>'+d.review.map(function(e){return '<div class="review">חזרה כללית: '+esc(e.subject)+' (מבחן ב-'+heShort(e.date)+')</div>'}).join('')+'</div>';
+  });
+  return h;
+}
+
+function render(){
+  var t=today(),up=st.exams.filter(function(e){return diff(t,e.date)>=0}).sort(function(a,b){return a.date<b.date?-1:1});
+  var p=plan(up,t);
+  document.getElementById('sub').textContent=up.length?up.length+' מבחנים בדרך. מסמנים מה סיימת, והשאר מתחלק לבד.':'מזינים מבחנים, תאריכים ונושאים. האפליקציה מחלקת את זה לימים.';
+  [].forEach.call(document.querySelectorAll('nav button'),function(b){b.setAttribute('aria-current',b.dataset.tab===tab?'page':'false')});
+  var w='';
+  if(!storageOk)w+='<div class="note"><b>השמירה לא עובדת בדפדפן הזה</b>הנתונים יימחקו כשסוגרים את הדף. אפשר לשמור גיבוי בלשונית "המבחנים".</div>';
+  if(st.exams.some(function(e){return e.demo}))w+='<div class="note"><b>זו דוגמה</b>הנתונים שמסומנים "דוגמה" אינם אמיתיים. <button class="link danger" data-act="cleardemo">מחיקת הדוגמה</button></div>';
+  document.getElementById('warn').innerHTML=w;
+  var v=document.getElementById('view'),sy=window.scrollY;
+  v.innerHTML=tab==='today'?viewToday(t,p,up):tab==='exams'?viewExams(t):viewPlan(t,p);
+  if(tab==='exams'){var r=v.querySelector('[data-act=rest]');if(r)r.value=String(st.rest);var c=v.querySelector('[data-act=cap]');if(c)c.value=String(st.cap)}
+  window.scrollTo(0,sy);
+}
+function go(t){tab=t;flash='';render();window.scrollTo(0,0)}
+
+document.addEventListener('click',function(ev){
+  var b=ev.target.closest('[data-tab],[data-act]');if(!b)return;
+  if(b.dataset.tab){go(b.dataset.tab);return}
+  var a=b.dataset.act;
+  if(b.tagName==='INPUT'&&(b.type==='checkbox'||b.type==='file'||b.type==='date'))return;
+  if(a==='goexams')go('exams');
+  else if(a==='demo'){st.exams=st.exams.concat(DEMO(today()));save();render()}
+  else if(a==='cleardemo'){st.exams=st.exams.filter(function(e){return!e.demo});save();render()}
+  else if(a==='open'){open=open===b.dataset.e?null:b.dataset.e;render()}
+  else if(a==='addexam')addExam();
+  else if(a==='addtopic'){var i=document.getElementById('nt-'+b.dataset.e),v=i.value.trim();if(v){byId(b.dataset.e).topics.push({id:uid(),text:v,done:null});save();render()}}
+  else if(a==='deltopic'){var e=byId(b.dataset.e);e.topics=e.topics.filter(function(x){return x.id!==b.dataset.t});save();render()}
+  else if(a==='delexam'){if(confirm('למחוק את המבחן ואת הנושאים שלו?')){st.exams=st.exams.filter(function(e){return e.id!==b.dataset.e});open=null;save();render()}}
+  else if(a==='export')exportData();
+});
+document.addEventListener('change',function(ev){
+  var b=ev.target,a=b.dataset&&b.dataset.act;if(!a)return;
+  if(a==='toggle'){
+    var e=byId(b.dataset.e),x=e.topics.filter(function(y){return y.id===b.dataset.t})[0];
+    if(x.done){x.done=null;st.stars=Math.max(0,st.stars-1);flash=''}else{x.done=today();st.stars++;flash=PRAISE[Math.floor(Math.random()*PRAISE.length)]}
+    save();render()
+  }else if(a==='rest'){st.rest=Number(b.value);save();render()}
+  else if(a==='cap'){st.cap=Number(b.value);save();render()}
+  else if(a==='esub'){var e2=byId(b.dataset.e);if(b.value.trim()){e2.subject=b.value.trim();save();render()}}
+  else if(a==='edate'){var e3=byId(b.dataset.e);if(b.value){e3.date=b.value;save();render()}}
+  else if(a==='remind')toggleRemind(b.checked);
+  else if(a==='import')importData(b.files[0]);
+});
+document.addEventListener('keydown',function(ev){if(ev.key==='Enter'&&ev.target.id&&ev.target.id.indexOf('nt-')===0){ev.target.nextElementSibling.click()}});
+function byId(id){return st.exams.filter(function(e){return e.id===id})[0]}
+function addExam(){
+  var s=document.getElementById('f-sub').value.trim(),d=document.getElementById('f-date').value,tp=document.getElementById('f-top').value.split(/\n|,|،/).map(function(x){return x.trim()}).filter(Boolean);
+  var er=document.getElementById('f-err');
+  if(!s){er.textContent='חסר שם מקצוע.';return}
+  if(!d){er.textContent='חסר תאריך.';return}
+  if(!tp.length){er.textContent='כתוב לפחות נושא אחד.';return}
+  st.exams.push({id:uid(),subject:s,date:d,topics:tp.map(function(x){return{id:uid(),text:x,done:null}})});
+  save();render();
+}
+function exportData(){
+  var blob=new Blob([JSON.stringify(st,null,1)],{type:'application/json'});
+  var a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='planner-backup-'+today()+'.json';document.body.appendChild(a);a.click();a.remove();
+}
+function importData(f){
+  var er=document.getElementById('imp-err');if(!f)return;
+  var r=new FileReader();r.onload=function(){try{var o=JSON.parse(r.result);if(!o||!Array.isArray(o.exams))throw 0;if(!confirm('לטעון את הגיבוי? זה יחליף את מה שיש עכשיו.'))return;st=Object.assign({},INIT,o);save();render()}catch(e){er.textContent='הקובץ לא נראה כמו גיבוי של האפליקציה.'}};r.readAsText(f);
+}
+function toggleRemind(on){
+  if(!on){st.remind=false;save();render();return}
+  Notification.requestPermission().then(function(p){st.remind=p==='granted';save();render();if(st.remind)maybeNotify(true)});
+}
+function maybeNotify(force){
+  if(!st.remind||!('Notification' in window)||Notification.permission!=='granted')return;
+  var t=today();if(!force&&st.lastNotif===t)return;
+  var up=st.exams.filter(function(e){return diff(t,e.date)>=0}),p=plan(up,t),td=p.days.filter(function(d){return d.date===t})[0];
+  var n=td?td.items.length:0;if(!n&&!force)return;
+  st.lastNotif=t;save();
+  var body=n?'היום '+n+' נושאים קטנים. אפשר להתחיל מאחד.':'אין נושאים להיום.';
+  navigator.serviceWorker.getRegistration().then(function(r){if(r)r.showNotification('התכנון שלי',{body:body,icon:"icon.svg",lang:'he',dir:'rtl'})});
+}
+if('serviceWorker'in navigator){try{navigator.serviceWorker.register("sw.js").catch(function(){})}catch(e){}}
+save();render();setTimeout(function(){maybeNotify(false)},1500);
+document.addEventListener('visibilitychange',function(){if(!document.hidden){render();maybeNotify(false)}});
+})();
+</script>
+</body>
+</html>
