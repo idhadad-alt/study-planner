@@ -67,7 +67,7 @@ footer{margin-top:36px;color:var(--ink2);font-size:14px;border-top:1px solid var
 <h1>התכנון שלי</h1>
 <p class="quiet" id="sub"></p>
 <nav aria-label="תפריט"><button data-tab="today">היום</button><button data-tab="exams">המבחנים</button><button data-tab="plan">כל הימים</button></nav>
-<p><button class="link" data-tab="help">איך משתמשים?</button></p>
+<p><button class="link" data-tab="help">איך משתמשים?</button> <button class="link" data-tab="feedback">איך הולך לי?</button></p>
 <div id="warn"></div>
 <div id="view"></div>
 <footer>
@@ -173,8 +173,22 @@ function viewExams(t){
 
 function remindHtml(){return window.plannerPushHtml?window.plannerPushHtml():'<p>תזכורת לא נטענה. אפשר לרענן.</p>'}
 
+function feedbackHtml(){
+ var f=st.feedback||{},h='<h2>איך הולך לי?</h2><p>משוב קצר לעצמך כדי להתאים את התכנון. לא מבחן, אין ציון ואין תשובה נכונה.</p><p class="quiet small">המשוב נשמר רק במכשיר הזה. הוא לא נשלח להורה, למורה או למפתחי האפליקציה. אין שינוי בתכנון בלי בחירה שלך.</p><div class="form"><label>איך העומס מרגיש?<select id="fb-load"><option value="">בחירה</option><option value="heavy">עמוס מדי</option><option value="fit">מתאים לי</option><option value="light">יש לי מקום לעוד</option></select></label><label>מה מקשה כרגע?<select id="fb-issue"><option value="">בחירה</option><option value="start">קשה להתחיל</option><option value="topic">נושא מסוים מורכב</option><option value="time">אין מספיק זמן</option><option value="app">משהו בממשק לא ברור</option><option value="fine">כרגע בסדר</option></select></label><label>מה כדאי לשנות? (לא חובה)<textarea id="fb-note" maxlength="500" rows="3" placeholder="למשל: לפרק נושא גדול לשני צעדים"></textarea></label><button class="btn" data-act="savefeedback">שמירת המשוב וקבלת הצעה</button></div>';
+ if(f.date){h+='<div class="note" role="status"><b>המשוב האחרון: '+heShort(f.date)+'</b>'+(f.note?'<p>'+esc(f.note)+'</p>':'');
+ if(f.load==='heavy')h+='<p>אפשר לנסות להוריד את העומס היומי בדרגה אחת. סמוך למבחן זה לא תמיד יספיק: נושאים שנותרו עדיין צריכים להיכנס לפני התאריך. כדאי גם לפרק נושאים גדולים או לבחור עם מורה מה חשוב יותר.</p>'+(st.cap>2?'<button class="btn ghost sm" data-act="lighter">להוריד העדפה מ-'+st.cap+' ל-'+(st.cap-1)+'</button>':'<p>העומס כבר בהעדפה הנמוכה ביותר.</p>');
+ else if(f.load==='light')h+='<p>אפשר לבחור עוד נושא מתוך "כל הימים", בלי לשנות את ההעדפה הקבועה. אם זה מרגיש נכון לאורך זמן, משנים עומס בהגדרות.</p>';
+ else h+='<p>אפשר להשאיר את הקצב כמו שהוא ולבדוק שוב אחרי יום או יומיים.</p>';
+ if(f.issue==='start')h+='<p>להתחלה: בחר נושא קל אחד. לא צריך לסיים את כל הרשימה עכשיו.</p>';
+ if(f.issue==='topic')h+='<p>פתח את המבחן וסמן את הנושא "מורכב לי". אפשר למחוק נושא גדול ולהוסיף במקומו כמה נושאים קטנים. נושא שהושלם כבר לא צריך למחוק.</p>';
+ if(f.issue==='time')h+='<p>בדוק ב"כל הימים" מה נשאר עד המבחן. התכנון הוא הערכת עומס, לא הבטחה שכל החומר יושלם. אם צפוף, כדאי לבקש עזרה בתעדוף.</p>';
+ if(f.issue==='app')h+='<p>אפשר לפתוח את "איך משתמשים?". ההערה נשארת כאן בלבד, ולא נשלחת כתקלת מוצר.</p>';
+ h+='<p><button class="link" data-tab="exams">למבחנים ולהגדרות</button> <button class="link danger" data-act="clearfeedback">מחיקת המשוב</button></p></div>';
+ }
+ return h;
+}
 function helpHtml(){
- return '<h2>מתחילים בצעד קטן</h2><p>לא צריך להזין הכול בבת אחת. אפשר להתחיל ממבחן אחד.</p><ol class="steps"><li><b>מוסיפים מבחן.</b> בלשונית "המבחנים": מקצוע, תאריך ונושאים, כל נושא בשורה. לוחצים "הוספה".</li><li><b>בוחרים קושי.</b> פותחים את המבחן ברשימה ובוחרים ליד כל נושא: קל לי, בינוני או מורכב לי. ברירת המחדל בינונית. הקושי משפיע על פיזור העומס, לא על הכוכבים.</li><li><b>עושים נושא אחד.</b> ב"היום" מסמנים מה שסיימת. מקבלים כוכב על כל נושא, בלי קנסות. נושא שלא הושלם מתחלק מחדש בין הימים שנשארו. ב"כל הימים" רואים את התמונה המלאה.</li><li><b>מתאימים את העומס.</b> בהגדרות ב"המבחנים" בוחרים יום מנוחה ועומס יומי. הודעת עומס היא סימן שכדאי לצמצם נושאים או להתאים את התכנון, לא כישלון.</li><li><b>באייפון: מוסיפים למסך הבית.</b> פותחים ב-Safari, מקישים שיתוף (ריבוע עם חץ למעלה), "הוספה למסך הבית", ואז "הוסף". פותחים מהסמל החדש. אם צריך, משתמשים ב"פתח ב-Safari" מתפריט הקישור. להתראות נדרש iOS 16.4 ומעלה.</li><li><b>תזכורת רק אם רוצים.</b> פותחים "המבחנים" ואז "תזכורת". בוחרים שעה ומפעילים בכפתור, ורק אז מאשרים התראות באייפון. אין בקשת הרשאה אוטומטית. קבלה בפועל בודקים בהתראת ניסיון, וייתכנו עיכובים.</li><li><b>שומרים גיבוי.</b> המבחנים והסימונים נשמרים רק בדפדפן הזה. אחרי הוספה למסך הבית בדוק שהמידע מופיע; אם לא, שמור גיבוי מ-Safari וטען אותו במסך הבית. לפני ניקוי נתונים או מעבר מכשיר: "המבחנים" ← "שמירת גיבוי". הקובץ מכיל את המבחנים, אז שומרים אותו במקום פרטי.</li></ol><p><button class="btn" data-act="start">מתחילים</button></p><p class="quiet small">אפשר לחזור להוראות בכל רגע דרך "איך משתמשים?" למעלה. אין צורך לשלוח לאף אחד את הנתונים.</p>';
+ return '<h2>מתחילים בצעד קטן</h2><p>לא צריך להזין הכול בבת אחת. אפשר להתחיל ממבחן אחד.</p><ol class="steps"><li><b>מוסיפים מבחן.</b> בלשונית "המבחנים": מקצוע, תאריך ונושאים, כל נושא בשורה. לוחצים "הוספה".</li><li><b>בוחרים קושי.</b> פותחים את המבחן ברשימה ובוחרים ליד כל נושא: קל לי, בינוני או מורכב לי. ברירת המחדל בינונית. הקושי משפיע על פיזור העומס, לא על הכוכבים.</li><li><b>עושים נושא אחד.</b> ב"היום" מסמנים מה שסיימת. מקבלים כוכב על כל נושא, בלי קנסות. נושא שלא הושלם מתחלק מחדש בין הימים שנשארו. ב"כל הימים" רואים את התמונה המלאה.</li><li><b>מתאימים את העומס.</b> בהגדרות ב"המבחנים" בוחרים יום מנוחה ועומס יומי. הודעת עומס היא סימן שכדאי לצמצם נושאים או להתאים את התכנון, לא כישלון.</li><li><b>באייפון: מוסיפים למסך הבית.</b> פותחים ב-Safari, מקישים שיתוף (ריבוע עם חץ למעלה), "הוספה למסך הבית", ואז "הוסף". פותחים מהסמל החדש. אם צריך, משתמשים ב"פתח ב-Safari" מתפריט הקישור. להתראות נדרש iOS 16.4 ומעלה.</li><li><b>תזכורת רק אם רוצים.</b> פותחים "המבחנים" ואז "תזכורת". בוחרים שעה ומפעילים בכפתור, ורק אז מאשרים התראות באייפון. אין בקשת הרשאה אוטומטית. קבלה בפועל בודקים בהתראת ניסיון, וייתכנו עיכובים.</li><li><b>שומרים גיבוי.</b> המבחנים והסימונים נשמרים רק בדפדפן הזה. אחרי הוספה למסך הבית בדוק שהמידע מופיע; אם לא, שמור גיבוי מ-Safari וטען אותו במסך הבית. לפני ניקוי נתונים או מעבר מכשיר: "המבחנים" ← "שמירת גיבוי". הקובץ מכיל את המבחנים, אז שומרים אותו במקום פרטי.</li></ol><p><button class="btn" data-act="start">מתחילים</button></p><p class="quiet small">ב"איך הולך לי?" אפשר לשמור משוב פרטי ולקבל הצעה להתאמת התכנון. שום שינוי לא מתבצע בלי בחירה שלך. אפשר לחזור להוראות בכל רגע דרך "איך משתמשים?" למעלה. אין צורך לשלוח לאף אחד את הנתונים.</p>';
 }
 function viewPlan(t,p){
   if(!p.days.length)return '<h2>כל הימים</h2><p class="quiet">אין עדיין תכנון. הוסף מבחן בלשונית "המבחנים".</p>';
@@ -195,7 +209,8 @@ function render(){
   if(st.exams.some(function(e){return e.demo}))w+='<div class="note"><b>זו דוגמה</b>הנתונים שמסומנים "דוגמה" אינם אמיתיים. <button class="link danger" data-act="cleardemo">מחיקת הדוגמה</button></div>';
   document.getElementById('warn').innerHTML=w;
   var v=document.getElementById('view'),sy=window.scrollY;
-  v.innerHTML=tab==='help'?helpHtml():tab==='today'?viewToday(t,p,up):tab==='exams'?viewExams(t):viewPlan(t,p);
+  v.innerHTML=tab==='feedback'?feedbackHtml():tab==='help'?helpHtml():tab==='today'?viewToday(t,p,up):tab==='exams'?viewExams(t):viewPlan(t,p);
+  if(tab==='feedback'&&st.feedback){var fl=v.querySelector('#fb-load'),fi=v.querySelector('#fb-issue'),fn=v.querySelector('#fb-note');fl.value=st.feedback.load||'';fi.value=st.feedback.issue||'';fn.value=st.feedback.note||''}
   if(tab==='exams'){var r=v.querySelector('[data-act=rest]');if(r)r.value=String(st.rest);var c=v.querySelector('[data-act=cap]');if(c)c.value=String(st.cap)}
   window.scrollTo(0,sy);
 }
@@ -206,7 +221,10 @@ document.addEventListener('click',function(ev){
   if(b.dataset.tab){go(b.dataset.tab);return}
   var a=b.dataset.act;
   if(b.tagName==='INPUT'&&(b.type==='checkbox'||b.type==='file'||b.type==='date'))return;
-  if(a==='start'){try{localStorage.setItem('planner-help-seen','1')}catch(e){}go('today')}
+  if(a==='savefeedback'){var fl=document.getElementById('fb-load').value,fi=document.getElementById('fb-issue').value;if(!fl&&!fi){alert('בחר איך העומס מרגיש או מה מקשה כרגע.');return}st.feedback={date:today(),load:fl,issue:fi,note:document.getElementById('fb-note').value.trim().slice(0,500)};save();render()}
+  else if(a==='lighter'){st.cap=Math.max(2,st.cap-1);save();render()}
+  else if(a==='clearfeedback'){delete st.feedback;save();render()}
+  else if(a==='start'){try{localStorage.setItem('planner-help-seen','1')}catch(e){}go('today')}
   else if(a==='goexams')go('exams');
   else if(a==='demo'){st.exams=st.exams.concat(DEMO(today()));save();render()}
   else if(a==='cleardemo'){st.exams=st.exams.filter(function(e){return!e.demo});save();render()}
@@ -248,13 +266,14 @@ function exportData(){
   var blob=new Blob([JSON.stringify(st,null,1)],{type:'application/json'});
   var a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='planner-backup-'+today()+'.json';document.body.appendChild(a);a.click();a.remove();
 }
+function validFeedback(f){if(!f||typeof f!=='object'||!/^\d{4}-\d{2}-\d{2}$/.test(f.date))return null;return {date:f.date,load:['heavy','fit','light'].includes(f.load)?f.load:'',issue:['start','topic','time','app','fine'].includes(f.issue)?f.issue:'',note:typeof f.note==='string'?f.note.slice(0,500):''}}
 function validData(o){
  if(!o||!Array.isArray(o.exams)||o.exams.length>200)throw Error('invalid');
  o.exams=o.exams.map(function(e){
  if(!e||typeof e.subject!=='string'||!/^\d{4}-\d{2}-\d{2}$/.test(e.date)||!Array.isArray(e.topics)||e.topics.length>1000)throw Error('invalid');
  return {id:uid(),subject:e.subject.slice(0,200),date:e.date,demo:!!e.demo,topics:e.topics.map(function(x){if(!x||typeof x.text!=='string')throw Error('invalid');return{id:uid(),text:x.text.slice(0,2000),done:typeof x.done==='string'&&/^\d{4}-\d{2}-\d{2}$/.test(x.done)?x.done:null,earned:!!x.earned,difficulty:weight(x)}})};
  });
- return {exams:o.exams,stars:Math.max(0,Number(o.stars)||0),rest:[-1,0,5,6].includes(o.rest)?o.rest:-1,cap:[2,3,4,5,6].includes(o.cap)?o.cap:4,remind:false,lastNotif:''};
+ return {exams:o.exams,stars:Math.max(0,Number(o.stars)||0),rest:[-1,0,5,6].includes(o.rest)?o.rest:-1,cap:[2,3,4,5,6].includes(o.cap)?o.cap:4,remind:false,lastNotif:'',feedback:validFeedback(o.feedback)};
 }
 function importData(f){
   var er=document.getElementById('imp-err');if(!f)return;
