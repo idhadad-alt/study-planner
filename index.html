@@ -80,8 +80,9 @@ footer{margin-top:36px;color:var(--ink2);font-size:14px;border-top:1px solid var
 'use strict';
 var KEY='study-planner.v1';
 var INIT={exams:[],stars:0,rest:-1,cap:4,remind:false,lastNotif:'',msg:''};
-var st=load(),tab=localStorage.getItem('planner-help-seen')?'today':'help',open=null,storageOk=true,msg='',flash='';
+var st=load(),tab=seenHelp()?'today':'help',open=null,storageOk=true,msg='',flash='';
 
+function seenHelp(){try{return !!localStorage.getItem('planner-help-seen')}catch(e){return false}}
 function load(){try{var r=localStorage.getItem(KEY);if(r){var o=JSON.parse(r);return Object.assign({},INIT,o)}}catch(e){}return JSON.parse(JSON.stringify(INIT))}
 function save(){try{localStorage.setItem(KEY,JSON.stringify(st));storageOk=true}catch(e){storageOk=false}}
 function esc(s){return String(s).replace(/[&<>"']/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]})}
@@ -205,7 +206,7 @@ document.addEventListener('click',function(ev){
   if(b.dataset.tab){go(b.dataset.tab);return}
   var a=b.dataset.act;
   if(b.tagName==='INPUT'&&(b.type==='checkbox'||b.type==='file'||b.type==='date'))return;
-  if(a==='start'){localStorage.setItem('planner-help-seen','1');go('today')}
+  if(a==='start'){try{localStorage.setItem('planner-help-seen','1')}catch(e){}go('today')}
   else if(a==='goexams')go('exams');
   else if(a==='demo'){st.exams=st.exams.concat(DEMO(today()));save();render()}
   else if(a==='cleardemo'){st.exams=st.exams.filter(function(e){return!e.demo});save();render()}
