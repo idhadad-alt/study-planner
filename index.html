@@ -59,7 +59,7 @@ nav button[aria-current=page]{background:var(--teal);border-color:var(--teal);co
 .review{margin-top:8px;padding:10px 14px;border-radius:var(--r);border:1px dashed var(--teal);color:var(--ink2)}
 .banner{margin:10px 0;padding:12px 14px;border-radius:var(--r);background:var(--sand);display:flex;gap:10px;align-items:center;justify-content:space-between}
 footer{margin-top:36px;color:var(--ink2);font-size:14px;border-top:1px solid var(--line);padding-top:14px}
-.row2{display:flex;gap:10px;flex-wrap:wrap}
+.steps{padding-inline-start:24px}.steps li{margin:18px 0}.difficulty{display:grid;font-size:12px;gap:4px;flex:0 0 96px}.difficulty select{max-width:96px;min-height:44px;border:1px solid var(--ink2);border-radius:8px;background:white;font-size:14px}.trow{flex-wrap:wrap}.trow .check{min-width:150px}.row2{display:flex;gap:10px;flex-wrap:wrap}
 </style>
 </head>
 <body>
@@ -67,18 +67,20 @@ footer{margin-top:36px;color:var(--ink2);font-size:14px;border-top:1px solid var
 <h1>התכנון שלי</h1>
 <p class="quiet" id="sub"></p>
 <nav aria-label="תפריט"><button data-tab="today">היום</button><button data-tab="exams">המבחנים</button><button data-tab="plan">כל הימים</button></nav>
+<p><button class="link" data-tab="help">איך משתמשים?</button></p>
 <div id="warn"></div>
 <div id="view"></div>
 <footer>
-<p>כל הנתונים נשמרים רק בדפדפן הזה, במכשיר הזה. אין חשבון, אין שרת ואין סנכרון. אם מנקים את נתוני הדפדפן או עוברים למכשיר אחר, הם לא יופיעו שם. אפשר לשמור גיבוי בלשונית "המבחנים".</p>
+<p>כל הנתונים נשמרים רק בדפדפן הזה, במכשיר הזה. אין סנכרון של נתוני לימוד. רק אם מפעילים תזכורות, הרשאת ההתראות והשעה נשמרות בנפרד בשרת פרטי. אם מנקים את נתוני הדפדפן או עוברים למכשיר אחר, הם לא יופיעו שם. אפשר לשמור גיבוי בלשונית "המבחנים".</p>
 </footer>
 </main>
+<script src="push.js"></script>
 <script>
 (function(){
 'use strict';
 var KEY='study-planner.v1';
 var INIT={exams:[],stars:0,rest:-1,cap:4,remind:false,lastNotif:'',msg:''};
-var st=load(),tab='today',open=null,storageOk=true,msg='',flash='';
+var st=load(),tab=localStorage.getItem('planner-help-seen')?'today':'help',open=null,storageOk=true,msg='',flash='';
 
 function load(){try{var r=localStorage.getItem(KEY);if(r){var o=JSON.parse(r);return Object.assign({},INIT,o)}}catch(e){}return JSON.parse(JSON.stringify(INIT))}
 function save(){try{localStorage.setItem(KEY,JSON.stringify(st));storageOk=true}catch(e){storageOk=false}}
@@ -93,24 +95,29 @@ function heDay(s){return parse(s).toLocaleDateString('he-IL',{weekday:'long',day
 function heShort(s){return parse(s).toLocaleDateString('he-IL',{day:'numeric',month:'numeric'})}
 function today(){return key(new Date())}
 
+function weight(x){return [1,2,3].includes(Number(x.difficulty))?Number(x.difficulty):2}
+function level(x){return ['','קל לי','בינוני','מורכב לי'][weight(x)]}
 function plan(exams,t){
   var days={},unsched=[],tight=[];
-  function get(d){return days[d]||(days[d]={date:d,items:[],review:[]})}
-  exams.forEach(function(e){
+  function get(d){return days[d]||(days[d]={date:d,items:[],review:[],load:0})}
+  exams.slice().sort(function(a,b){return a.date.localeCompare(b.date)}).forEach(function(e){
     var avail=[];
     if(diff(t,e.date)>366){unsched.push(e);return}
     for(var d=t;diff(d,e.date)>0;d=addDays(d,1)){if(parse(d).getDay()!==st.rest)avail.push(d)}
-    var openT=e.topics.filter(function(x){return !x.done || x.done===t});
-    if(!e.topics.some(function(x){return !x.done}))return;
+    var openT=e.topics.filter(function(x){return !x.done});
     if(!openT.length)return;
     if(!avail.length){unsched.push(e);return}
     var study=avail;
     if(avail.length>=4){study=avail.slice(0,-1);get(avail[avail.length-1]).review.push(e)}
-    if(openT.length>study.length*st.cap)tight.push(e);
-    openT.forEach(function(x,i){if(!x.done)get(study[Math.floor(i*study.length/openT.length)]).items.push({e:e,t:x})});
+    e.topics.filter(function(x){return x.done===t}).forEach(function(x){get(t).load+=weight(x)});
+    var sum=openT.reduce(function(n,x){return n+weight(x)},0);
+    if(sum>study.length*st.cap*2)tight.push(e);
+    openT.slice().sort(function(a,b){return weight(b)-weight(a)}).forEach(function(x){
+      var target=study.reduce(function(best,d){return get(d).load<get(best).load?d:best},study[0]);
+      get(target).items.push({e:e,t:x});get(target).load+=weight(x);
+    });
   });
-  var list=Object.keys(days).sort().map(function(k){return days[k]});
-  return{days:list,unsched:unsched,tight:tight};
+  return {days:Object.keys(days).sort().map(function(k){return days[k]}),unsched:unsched,tight:tight};
 }
 
 var PRAISE=['יפה. צעד אחד קטן קדימה.','עוד נושא מאחוריך.','זה נספר. הערימה קטנה יותר.','מצוין, ממשיכים בקצב שלך.','כל הכבוד על ההתחלה, זה החלק הקשה.'];
@@ -118,7 +125,7 @@ var DEMO=function(t){return[
  {id:uid(),demo:1,subject:'דוגמה: ספרות',date:addDays(t,6),topics:['שיר א','שיר ב','סיפור קצר','מושגי יסוד'].map(function(x){return{id:uid(),text:x,done:null}})},
  {id:uid(),demo:1,subject:'דוגמה: מתמטיקה',date:addDays(t,9),topics:['פונקציות','הסתברות','גיאומטריה','סדרות','תרגול מבחנים'].map(function(x){return{id:uid(),text:x,done:null}})}]};
 
-function check(e,x){var d=!!x.done;return '<label class="check'+(d?' done':'')+'"><input type="checkbox" data-act="toggle" data-e="'+e.id+'" data-t="'+x.id+'"'+(d?' checked':'')+'><span class="box" aria-hidden="true">'+(d?'✓':'')+'</span><span class="ct"><b>'+esc(x.text)+'</b><small>'+esc(e.subject)+'</small></span></label>'}
+function check(e,x){var d=!!x.done;return '<label class="check'+(d?' done':'')+'"><input type="checkbox" data-act="toggle" data-e="'+e.id+'" data-t="'+x.id+'"'+(d?' checked':'')+'><span class="box" aria-hidden="true">'+(d?'✓':'')+'</span><span class="ct"><b>'+esc(x.text)+'</b><small>'+esc(e.subject)+' · '+level(x)+'</small></span></label>'}
 
 function viewToday(t,p,up){
   if(!up.length)return '<h2>להתחיל</h2><p>עוד אין מבחנים. הוסף מבחן ראשון: מקצוע, תאריך ורשימת נושאים.</p><p><button class="btn" data-act="goexams">הוספת מבחן</button></p><p class="quiet">רוצה קודם לראות איך זה נראה?</p><p><button class="btn ghost" data-act="demo">טעינת דוגמה</button></p>';
@@ -129,7 +136,7 @@ function viewToday(t,p,up){
   var h='<h2>היום</h2><p>'+heDay(t)+'</p>';
   if(!openI.length&&done.length&&!(td&&td.review.length))h+='<div class="cheer">סיימת את מה שתוכנן להיום. אפשר לנוח, או לקחת נושא קטן מהימים הבאים.</div>';
   if(!openI.length&&!done.length)h+='<p>אין נושאים מתוכננים להיום.'+(p.days[0]?' היום הבא עם לימוד: '+heDay(p.days[0].date)+'.':'')+'</p>';
-  if(openI.length>st.cap)h+='<div class="note"><b>היום עמוס</b>יש '+openI.length+' נושאים, יותר מ-'+st.cap+'. אפשר להתחיל מהמבחן הקרוב ביותר. מה שלא נגמר עובר אוטומטית לימים הבאים.</div>';
+  if(td&&td.load>st.cap*2)h+='<div class="note"><b>היום עמוס</b>יש '+openI.length+' נושאים בעומס משוער מעל ההעדפה שבחרת. אפשר להתחיל מהמבחן הקרוב ביותר. מה שלא נגמר עובר אוטומטית לימים הבאים.</div>';
   h+='<div class="list">'+openI.map(function(i){return check(i.e,i.t)}).join('')+'</div>';
   if(td)h+=td.review.map(function(e){return '<div class="review">חזרה כללית: '+esc(e.subject)+'</div>'}).join('');
   if(done.length)h+='<h3>הושלם היום</h3><div class="list">'+done.map(function(i){return check(i.e,i.t)}).join('')+'</div>';
@@ -137,7 +144,7 @@ function viewToday(t,p,up){
   h+='<h2>איפה אני</h2><div class="stats"><div><b>'+dn+'/'+tot+'</b><small>נושאים הושלמו</small></div><div><b>'+st.stars+' ⭐</b><small>כוכבים. רק עולים</small></div></div><div class="bar" role="progressbar" aria-valuemin="0" aria-valuemax="'+tot+'" aria-valuenow="'+dn+'"><i style="width:'+(tot?dn/tot*100:0)+'%"></i></div>';
   if(nx)h+='<p class="quiet">המבחן הקרוב: '+esc(nx.subject)+', '+heDay(nx.date)+' ('+(diff(t,nx.date)==0?'היום':'בעוד '+diff(t,nx.date)+' ימים')+').</p>';
   p.tight.forEach(function(e){h+='<div class="note"><b>'+esc(e.subject)+': הרבה נושאים בזמן קצר</b>לא כל הנושאים נכנסים בנוחות עד המבחן. כדאי לסמן קודם את החשובים ביותר, ואפשר להעלות את מספר הנושאים ביום בהגדרות.</div>'});
-  p.unsched.forEach(function(e){h+='<div class="note"><b>'+esc(e.subject)+': המבחן מחר או היום</b>אין ימים לחלק. בחר כמה נושאים עיקריים והתחל מהם.</div>'});
+  p.unsched.forEach(function(e){h+='<div class="note"><b>'+esc(e.subject)+': אין ימים זמינים לפני המבחן</b>אין ימים לחלק. בחר כמה נושאים עיקריים והתחל מהם.</div>'});
   return h;
 }
 
@@ -150,35 +157,29 @@ function viewExams(t){
     var d=e.topics.filter(function(x){return x.done}).length,l=diff(t,e.date),o=open===e.id;
     h+='<div class="exam"><button class="examhead" data-act="open" data-e="'+e.id+'" aria-expanded="'+o+'"><span><b>'+esc(e.subject)+'</b><small>'+heDay(e.date)+' · '+(l<0?'עבר':l===0?'היום':'בעוד '+l+' ימים')+'</small></span><span class="cnt">'+d+'/'+e.topics.length+'</span></button>';
     if(o){
-      h+='<div class="examBody"><div class="form"><label>מקצוע<input data-act="esub" data-e="'+e.id+'" value="'+esc(e.subject)+'"></label><label>תאריך<input type="date" data-act="edate" data-e="'+e.id+'" value="'+e.date+'"></label></div><div class="list">'+e.topics.map(function(x){return '<div class="trow">'+check(e,x)+'<button class="x" data-act="deltopic" data-e="'+e.id+'" data-t="'+x.id+'" aria-label="מחיקת '+esc(x.text)+'">×</button></div>'}).join('')+'</div>'+
+      h+='<div class="examBody"><div class="form"><label>מקצוע<input data-act="esub" data-e="'+e.id+'" value="'+esc(e.subject)+'"></label><label>תאריך<input type="date" data-act="edate" data-e="'+e.id+'" value="'+e.date+'"></label></div><div class="list">'+e.topics.map(function(x){return '<div class="trow">'+check(e,x)+'<label class="difficulty">קושי<select data-act="difficulty" data-e="'+e.id+'" data-t="'+x.id+'" aria-label="קושי: '+esc(x.text)+'">'+[1,2,3].map(function(n){return '<option value="'+n+'"'+(weight(x)===n?' selected':'')+'>'+['','קל לי','בינוני','מורכב לי'][n]+'</option>'}).join('')+'</select></label><button class="x" data-act="deltopic" data-e="'+e.id+'" data-t="'+x.id+'" aria-label="מחיקת '+esc(x.text)+'">×</button></div>'}).join('')+'</div>'+
       '<div class="add"><input id="nt-'+e.id+'" placeholder="הוספת נושא" aria-label="נושא חדש"><button class="btn sm" data-act="addtopic" data-e="'+e.id+'">הוסף</button></div><button class="link danger" data-act="delexam" data-e="'+e.id+'">מחיקת המבחן</button></div>';
     }
     h+='</div>';
   });
-  h+='<h2>הגדרות</h2><div class="form"><label>יום מנוחה קבוע<select data-act="rest"><option value="-1">אין, לומדים כל יום</option><option value="5">שישי</option><option value="6">שבת</option><option value="0">ראשון</option></select></label><label>כמה נושאים ביום נוח לי<select data-act="cap">'+[2,3,4,5,6].map(function(n){return '<option>'+n+'</option>'}).join('')+'</select></label></div>';
+  h+='<h2>הגדרות</h2><div class="form"><label>יום מנוחה קבוע<select data-act="rest"><option value="-1">אין, לומדים כל יום</option><option value="5">שישי</option><option value="6">שבת</option><option value="0">ראשון</option></select></label><label>עומס יומי שנוח לי (בנושאים בינוניים)<select data-act="cap">'+[2,3,4,5,6].map(function(n){return '<option>'+n+'</option>'}).join('')+'</select></label></div>';
+  h+='<p class="quiet small">הקושי הוא התחושה שלך, לא הערכה של היכולת או זמן מדויק. קל = נקודת עומס אחת, בינוני = 2, מורכב = 3. נושאים מורכבים מקבלים קדימות והעומס מתפזר בין הימים. אפשר לשנות קושי בכל נושא לאחר פתיחת המבחן.</p>';
   h+='<h2>תזכורת</h2>'+remindHtml();
   h+='<h2>גיבוי</h2><p class="quiet small">הנתונים רק במכשיר הזה. אפשר לשמור קובץ גיבוי ולטעון אותו כאן או במכשיר אחר.</p><div class="row2"><button class="btn ghost sm" data-act="export">שמירת גיבוי</button><label class="btn ghost sm" style="display:inline-grid;place-items:center;cursor:pointer">טעינת גיבוי<input type="file" accept="application/json" data-act="import" style="display:none"></label></div><div class="err" id="imp-err" role="alert"></div>';
   if(st.exams.some(function(e){return e.demo}))h+='<p><button class="link danger" data-act="cleardemo">מחיקת נתוני הדוגמה</button></p>';
   return h;
 }
 
-function remindHtml(){
-  var sup=('Notification' in window)&&('serviceWorker' in navigator);
-  if(!sup)return '<p class="quiet small">הדפדפן הזה לא תומך בהתראות. הסיכום של היום תמיד מופיע כשפותחים את הדף.</p>';
-  var perm=Notification.permission;
-  var ios=/iphone|ipad/i.test(navigator.userAgent)&&!window.navigator.standalone;
-  var h='<p class="quiet small">התזכורת מופיעה רק כשהדף פתוח או נפתח: הודעה אחת ביום עם מה שמתוכנן להיום. היא לא נשלחת כשהדף סגור לגמרי.</p>';
-  if(ios)h+='<p class="quiet small">באייפון צריך קודם להוסיף למסך הבית (שיתוף ← הוספה למסך הבית) ולפתוח משם.</p>';
-  if(perm==='denied')h+='<p class="quiet small">ההתראות חסומות בהגדרות הדפדפן.</p>';
-  else h+='<label class="check" style="cursor:pointer"><input type="checkbox" data-act="remind"'+(st.remind&&perm==='granted'?' checked':'')+'><span class="box" aria-hidden="true">'+(st.remind&&perm==='granted'?'✓':'')+'</span><span class="ct"><b>הודעה יומית כשפותחים</b></span></label>';
-  return h;
-}
+function remindHtml(){return window.plannerPushHtml?window.plannerPushHtml():'<p>תזכורת לא נטענה. אפשר לרענן.</p>'}
 
+function helpHtml(){
+ return '<h2>מתחילים בצעד קטן</h2><p>לא צריך להזין הכול בבת אחת. אפשר להתחיל ממבחן אחד.</p><ol class="steps"><li><b>מוסיפים מבחן.</b> בלשונית "המבחנים": מקצוע, תאריך ונושאים, כל נושא בשורה. לוחצים "הוספה".</li><li><b>בוחרים קושי.</b> פותחים את המבחן ברשימה ובוחרים ליד כל נושא: קל לי, בינוני או מורכב לי. ברירת המחדל בינונית. הקושי משפיע על פיזור העומס, לא על הכוכבים.</li><li><b>עושים נושא אחד.</b> ב"היום" מסמנים מה שסיימת. מקבלים כוכב על כל נושא, בלי קנסות. נושא שלא הושלם מתחלק מחדש בין הימים שנשארו. ב"כל הימים" רואים את התמונה המלאה.</li><li><b>מתאימים את העומס.</b> בהגדרות ב"המבחנים" בוחרים יום מנוחה ועומס יומי. הודעת עומס היא סימן שכדאי לצמצם נושאים או להתאים את התכנון, לא כישלון.</li><li><b>באייפון: מוסיפים למסך הבית.</b> פותחים ב-Safari, מקישים שיתוף (ריבוע עם חץ למעלה), "הוספה למסך הבית", ואז "הוסף". פותחים מהסמל החדש. אם צריך, משתמשים ב"פתח ב-Safari" מתפריט הקישור. להתראות נדרש iOS 16.4 ומעלה.</li><li><b>תזכורת רק אם רוצים.</b> פותחים "המבחנים" ואז "תזכורת". בוחרים שעה ומפעילים בכפתור, ורק אז מאשרים התראות באייפון. אין בקשת הרשאה אוטומטית. קבלה בפועל בודקים בהתראת ניסיון, וייתכנו עיכובים.</li><li><b>שומרים גיבוי.</b> המבחנים והסימונים נשמרים רק בדפדפן הזה. אחרי הוספה למסך הבית בדוק שהמידע מופיע; אם לא, שמור גיבוי מ-Safari וטען אותו במסך הבית. לפני ניקוי נתונים או מעבר מכשיר: "המבחנים" ← "שמירת גיבוי". הקובץ מכיל את המבחנים, אז שומרים אותו במקום פרטי.</li></ol><p><button class="btn" data-act="start">מתחילים</button></p><p class="quiet small">אפשר לחזור להוראות בכל רגע דרך "איך משתמשים?" למעלה. אין צורך לשלוח לאף אחד את הנתונים.</p>';
+}
 function viewPlan(t,p){
   if(!p.days.length)return '<h2>כל הימים</h2><p class="quiet">אין עדיין תכנון. הוסף מבחן בלשונית "המבחנים".</p>';
   var h='<h2>כל הימים</h2><p class="quiet">נושאים שלא הושלמו מתחלקים מחדש על הימים שנשארו. אין פספוס, רק הזזה. אין לימוד אחרי תאריך המבחן.</p>';
   p.days.forEach(function(d){
-    h+='<div class="day"><div class="dayhead"><span>'+(d.date===t?'היום':heDay(d.date))+'</span>'+(d.items.length>st.cap?'<span class="tag">עמוס: '+d.items.length+'</span>':'')+'</div><div class="list">'+d.items.map(function(i){return check(i.e,i.t)}).join('')+'</div>'+d.review.map(function(e){return '<div class="review">חזרה כללית: '+esc(e.subject)+' (מבחן ב-'+heShort(e.date)+')</div>'}).join('')+'</div>';
+    h+='<div class="day"><div class="dayhead"><span>'+(d.date===t?'היום':heDay(d.date))+'</span>'+(d.load>st.cap*2?'<span class="tag">עמוס: '+d.items.length+'</span>':'')+'</div><div class="list">'+d.items.map(function(i){return check(i.e,i.t)}).join('')+'</div>'+d.review.map(function(e){return '<div class="review">חזרה כללית: '+esc(e.subject)+' (מבחן ב-'+heShort(e.date)+')</div>'}).join('')+'</div>';
   });
   return h;
 }
@@ -193,7 +194,7 @@ function render(){
   if(st.exams.some(function(e){return e.demo}))w+='<div class="note"><b>זו דוגמה</b>הנתונים שמסומנים "דוגמה" אינם אמיתיים. <button class="link danger" data-act="cleardemo">מחיקת הדוגמה</button></div>';
   document.getElementById('warn').innerHTML=w;
   var v=document.getElementById('view'),sy=window.scrollY;
-  v.innerHTML=tab==='today'?viewToday(t,p,up):tab==='exams'?viewExams(t):viewPlan(t,p);
+  v.innerHTML=tab==='help'?helpHtml():tab==='today'?viewToday(t,p,up):tab==='exams'?viewExams(t):viewPlan(t,p);
   if(tab==='exams'){var r=v.querySelector('[data-act=rest]');if(r)r.value=String(st.rest);var c=v.querySelector('[data-act=cap]');if(c)c.value=String(st.cap)}
   window.scrollTo(0,sy);
 }
@@ -204,7 +205,8 @@ document.addEventListener('click',function(ev){
   if(b.dataset.tab){go(b.dataset.tab);return}
   var a=b.dataset.act;
   if(b.tagName==='INPUT'&&(b.type==='checkbox'||b.type==='file'||b.type==='date'))return;
-  if(a==='goexams')go('exams');
+  if(a==='start'){localStorage.setItem('planner-help-seen','1');go('today')}
+  else if(a==='goexams')go('exams');
   else if(a==='demo'){st.exams=st.exams.concat(DEMO(today()));save();render()}
   else if(a==='cleardemo'){st.exams=st.exams.filter(function(e){return!e.demo});save();render()}
   else if(a==='open'){open=open===b.dataset.e?null:b.dataset.e;render()}
@@ -220,7 +222,8 @@ document.addEventListener('change',function(ev){
     var e=byId(b.dataset.e),x=e.topics.filter(function(y){return y.id===b.dataset.t})[0];
     if(x.done){x.done=null;flash=''}else{x.done=today();if(!x.earned){st.stars++;x.earned=true}flash=PRAISE[Math.floor(Math.random()*PRAISE.length)]}
     save();render()
-  }else if(a==='rest'){st.rest=Number(b.value);save();render()}
+  }else if(a==='difficulty'){var dt=byId(b.dataset.e).topics.find(function(x){return x.id===b.dataset.t});dt.difficulty=Number(b.value);save();render()}
+  else if(a==='rest'){st.rest=Number(b.value);save();render()}
   else if(a==='cap'){st.cap=Number(b.value);save();render()}
   else if(a==='esub'){var e2=byId(b.dataset.e);if(b.value.trim()){e2.subject=b.value.trim();save();render()}}
   else if(a==='edate'){var e3=byId(b.dataset.e);if(b.value){e3.date=b.value;save();render()}}
@@ -248,7 +251,7 @@ function validData(o){
  if(!o||!Array.isArray(o.exams)||o.exams.length>200)throw Error('invalid');
  o.exams=o.exams.map(function(e){
  if(!e||typeof e.subject!=='string'||!/^\d{4}-\d{2}-\d{2}$/.test(e.date)||!Array.isArray(e.topics)||e.topics.length>1000)throw Error('invalid');
- return {id:uid(),subject:e.subject.slice(0,200),date:e.date,demo:!!e.demo,topics:e.topics.map(function(x){if(!x||typeof x.text!=='string')throw Error('invalid');return{id:uid(),text:x.text.slice(0,2000),done:typeof x.done==='string'&&/^\d{4}-\d{2}-\d{2}$/.test(x.done)?x.done:null,earned:!!x.earned}})};
+ return {id:uid(),subject:e.subject.slice(0,200),date:e.date,demo:!!e.demo,topics:e.topics.map(function(x){if(!x||typeof x.text!=='string')throw Error('invalid');return{id:uid(),text:x.text.slice(0,2000),done:typeof x.done==='string'&&/^\d{4}-\d{2}-\d{2}$/.test(x.done)?x.done:null,earned:!!x.earned,difficulty:weight(x)}})};
  });
  return {exams:o.exams,stars:Math.max(0,Number(o.stars)||0),rest:[-1,0,5,6].includes(o.rest)?o.rest:-1,cap:[2,3,4,5,6].includes(o.cap)?o.cap:4,remind:false,lastNotif:''};
 }
@@ -270,8 +273,8 @@ function maybeNotify(force){
   navigator.serviceWorker.getRegistration().then(function(r){if(r)r.showNotification('התכנון שלי',{body:body,icon:"icon.svg",lang:'he',dir:'rtl'})});
 }
 if('serviceWorker'in navigator){try{navigator.serviceWorker.register("sw.js").catch(function(){})}catch(e){}}
-save();render();setTimeout(function(){maybeNotify(false)},1500);
-document.addEventListener('visibilitychange',function(){if(!document.hidden){render();maybeNotify(false)}});
+st.remind=false;save();render();
+document.addEventListener('visibilitychange',function(){if(!document.hidden){render()}});
 })();
 </script>
 </body>
